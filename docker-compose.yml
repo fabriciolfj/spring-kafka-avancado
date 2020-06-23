@@ -1,0 +1,52 @@
+version: "3.7"
+
+networks:
+  kafka-net:
+    name: kafka-net
+    driver: bridge
+
+services:
+  zookeeper:
+    image: zookeeper:3.6.1
+    container_name: zookeeper
+    restart: always
+    networks:
+      - kafka-net
+    ports:
+      - "2181:2181"
+    volumes:
+      - c:/zookeeper:/bitnami/zookeeper
+
+  kafka:
+    image: wurstmeister/kafka:2.12-2.5.0
+    container_name: kafka
+    restart: always
+    networks:
+      - kafka-net
+    ports:
+      - "9092:9092"
+    volumes:
+      - c:/kafka:/bitnami/kafka
+    environment:
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: DOCKER_INTERNAL:PLAINTEXT,DOCKER_EXTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: DOCKER_INTERNAL://:29092,DOCKER_EXTERNAL://:9092
+      KAFKA_ADVERTISED_LISTENERS: DOCKER_INTERNAL://kafka:29092,DOCKER_EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER_INTERNAL
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_BROKER_ID: 1
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    depends_on:
+      - zookeeper
+      
+  kafdrop:
+    restart: always
+    container_name: kafdrop_container
+    image: obsidiandynamics/kafdrop:3.24.0
+    environment:
+      KAFKA_BROKERCONNECT: "kafka:9092"
+    networks:
+      - kafka-net
+    ports:
+      - "9000:9000"
+    depends_on:
+      - kafka
