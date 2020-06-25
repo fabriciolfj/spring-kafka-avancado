@@ -31,6 +31,9 @@ dependencies {
 	runtimeOnly 'com.h2database:h2'
 	compileOnly 'org.projectlombok:lombok'
 	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
+	compile group: 'org.flywaydb', name: 'flyway-core', version: '6.4.4'
+	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.0'
+
 	annotationProcessor 'org.projectlombok:lombok'
 	annotationProcessor("org.mapstruct:mapstruct-processor:$mapStructVersion")
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {

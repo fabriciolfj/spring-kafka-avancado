@@ -1,5 +1,6 @@
 package com.github.fabriciolfj.domain.integration.broker.producer;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fabriciolfj.domain.integration.broker.model.OrderMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

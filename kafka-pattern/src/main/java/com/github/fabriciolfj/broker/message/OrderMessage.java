@@ -1,10 +1,9 @@
-package com.github.fabriciolfj.domain.integration.broker.model;
+package com.github.fabriciolfj.broker.message;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import com.github.fabriciolfj.infrastructure.util.LocalDateTimeDeserializer;
-import com.github.fabriciolfj.infrastructure.util.LocalDateTimeSerializer;
+import com.github.fabriciolfj.util.LocalDateTimeDeserializer;
+import com.github.fabriciolfj.util.LocalDateTimeSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +11,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -22,9 +20,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @ToString
-public class OrderMessage implements Serializable {
-
-    private static final long serialVersionUID = 2921365152136307309L;
+public class OrderMessage {
 
     private String creditCardNumber;
 
