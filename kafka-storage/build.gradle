@@ -12,9 +12,14 @@ repositories {
 	mavenCentral()
 }
 
+ext {
+	set('jacksonVersion', "2.11.0")
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
 	implementation 'org.springframework.kafka:spring-kafka'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
