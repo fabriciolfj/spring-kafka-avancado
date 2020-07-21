@@ -2,7 +2,7 @@ package com.github.fabriciolfj.stream.promotion;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.fabriciolfj.broker.message.PromotionMessage;
+import com.github.fabriciolfj.domain.integration.broker.model.PromotionMessage;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.StreamsBuilder;
@@ -12,9 +12,8 @@ import org.apache.kafka.streams.kstream.Printed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
+//@Configuration
 public class PromotionUppercaseStream {
 
     private static final Logger LOG = LoggerFactory.getLogger(PromotionUppercaseStream.class);

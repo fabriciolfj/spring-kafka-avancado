@@ -15,7 +15,7 @@ services:
     ports:
       - "2181:2181"
     volumes:
-      - c:/zookeeper:/bitnami/zookeeper
+      - /zookeeper:/bitnami/zookeeper
 
   kafka:
     image: wurstmeister/kafka:2.12-2.5.0
@@ -26,7 +26,7 @@ services:
     ports:
       - "9092:9092"
     volumes:
-      - c:/kafka:/bitnami/kafka
+      - /kafka:/bitnami/kafka
     environment:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: DOCKER_INTERNAL:PLAINTEXT,DOCKER_EXTERNAL:PLAINTEXT
       KAFKA_LISTENERS: DOCKER_INTERNAL://:29092,DOCKER_EXTERNAL://:9092

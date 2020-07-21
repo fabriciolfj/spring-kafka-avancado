@@ -1,4 +1,4 @@
-package com.github.fabriciolfj.broker.message;
+package com.github.fabriciolfj.domain.integration.broker.model;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

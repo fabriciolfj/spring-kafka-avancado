@@ -1,4 +1,4 @@
-package com.github.fabriciolfj.broker.message;
+package com.github.fabriciolfj.domain.integration.broker.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

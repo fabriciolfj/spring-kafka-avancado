@@ -1,4 +1,4 @@
-package com.github.fabriciolfj.broker.message;
+package com.github.fabriciolfj.domain.integration.broker.model;
 
 
 public class PromotionMessage {
@@ -19,5 +19,12 @@ public class PromotionMessage {
 
     public void setPromotionCode(String promotionCode) {
         this.promotionCode = promotionCode;
+    }
+
+    @Override
+    public String toString() {
+        return "PromotionMessage{" +
+                "promotionCode='" + promotionCode + '\'' +
+                '}';
     }
 }
