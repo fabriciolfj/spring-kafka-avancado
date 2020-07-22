@@ -18,6 +18,7 @@ public abstract class OrderMessageDecorator implements OrderMessageMapper {
         orderMessage.setCode(item.getOrder().getCode());
         orderMessage.setLocation(item.getOrder().getLocation());
         orderMessage.setDateTime(item.getOrder().getDateTime());
+        orderMessage.setItemName(item.getName());
         orderMessage.setCreditCardNumber(item.getOrder().getCreditCardNumber());
         return orderMessage;
     }
