@@ -13,13 +13,15 @@ import org.apache.kafka.streams.kstream.Printed;
 import org.apache.kafka.streams.kstream.Produced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.support.KafkaStreamBrancher;
 import org.springframework.kafka.support.serializer.JsonSerde;
 
 import static com.github.fabriciolfj.util.CommodityStreamUtil.isLargeQuantity;
+import static com.github.fabriciolfj.util.CommodityStreamUtil.isPlastic;
 
 @Slf4j
 //@Configuration
-public class CommodityOneStream {
+public class CommodityThreeStream {
 
     //@Bean
     public KStream<String, OrderMessage> kStreamCommodityTrading(StreamsBuilder builder) {
@@ -32,18 +34,26 @@ public class CommodityOneStream {
                 Consumed.with(stringSerde, orderSerde))
                 .mapValues(CommodityStreamUtil::maskCreditCard);
 
-        KStream<String, OrderPatternMessage> patternStream = maskedOrderStream
-                .mapValues(CommodityStreamUtil::mapToOrderPattern);
-
         KStream<String, OrderRewardMessage> rewardStream = maskedOrderStream.filter(isLargeQuantity())
+                .filterNot(CommodityStreamUtil.isCheap())
                 .mapValues(CommodityStreamUtil::mapToOrderReward);
 
-        patternStream.to("t.commodity.pattern-one", Produced.with(stringSerde, orderPatternSerde));
-        rewardStream.to("t.commodity.reward-one", Produced.with(stringSerde, orderRewardSerde));
-        maskedOrderStream.to("t.commodity.storage-one", Produced.with(stringSerde, orderSerde));
+        KStream<String, OrderMessage> storageStream = maskedOrderStream
+                .selectKey(CommodityStreamUtil.generateStorageKey());
 
-        maskedOrderStream.print(Printed.<String, OrderMessage>toSysOut().withLabel("Masked Order Stream"));
-        log.info("Send messages");
+        final var branchProducer = Produced.with(stringSerde, orderPatternSerde);
+        new KafkaStreamBrancher<String, OrderPatternMessage>()
+                .branch(isPlastic(), kstream -> kstream.to("t.commodity.pattern-three.plastic", branchProducer))
+                .defaultBranch(kstream -> kstream.to("t.commodity.pattern-three.notplastic", branchProducer))
+                .onTopOf(maskedOrderStream.mapValues(CommodityStreamUtil::mapToOrderPattern));
+
+
+        rewardStream.to("t.commodity.reward-three", Produced.with(stringSerde, orderRewardSerde));
+        storageStream.to("t.commodity.storage-three", Produced.with(stringSerde, orderSerde));
+
+        rewardStream.print(Printed.<String, OrderRewardMessage>toSysOut().withLabel("OrderRewardMessage send"));
+        storageStream.print(Printed.<String, OrderMessage>toSysOut().withLabel("OrderMessage storage send"));
+        log.info("Send messages two");
         return maskedOrderStream;
     }
 }

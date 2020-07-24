@@ -19,7 +19,7 @@ import static com.github.fabriciolfj.util.CommodityStreamUtil.isLargeQuantity;
 
 @Slf4j
 //@Configuration
-public class CommodityOneStream {
+public class CommodityTwoStream {
 
     //@Bean
     public KStream<String, OrderMessage> kStreamCommodityTrading(StreamsBuilder builder) {
@@ -32,18 +32,30 @@ public class CommodityOneStream {
                 Consumed.with(stringSerde, orderSerde))
                 .mapValues(CommodityStreamUtil::maskCreditCard);
 
-        KStream<String, OrderPatternMessage> patternStream = maskedOrderStream
-                .mapValues(CommodityStreamUtil::mapToOrderPattern);
+        KStream<String, OrderPatternMessage>[] patternStream = maskedOrderStream
+                .mapValues(CommodityStreamUtil::mapToOrderPattern)
+                .branch(CommodityStreamUtil.isPlastic(), (k, v) -> true);
 
         KStream<String, OrderRewardMessage> rewardStream = maskedOrderStream.filter(isLargeQuantity())
+                .filterNot(CommodityStreamUtil.isCheap())
                 .mapValues(CommodityStreamUtil::mapToOrderReward);
 
-        patternStream.to("t.commodity.pattern-one", Produced.with(stringSerde, orderPatternSerde));
-        rewardStream.to("t.commodity.reward-one", Produced.with(stringSerde, orderRewardSerde));
-        maskedOrderStream.to("t.commodity.storage-one", Produced.with(stringSerde, orderSerde));
+        KStream<String, OrderMessage> storageStream = maskedOrderStream
+                .selectKey(CommodityStreamUtil.generateStorageKey());
 
-        maskedOrderStream.print(Printed.<String, OrderMessage>toSysOut().withLabel("Masked Order Stream"));
-        log.info("Send messages");
+        int plasticIndex = 0;
+        int noPlasticIndex = 1;
+
+        patternStream[plasticIndex].to("t.commodity.pattern-two.plastic", Produced.with(stringSerde, orderPatternSerde));
+        patternStream[noPlasticIndex].to("t.commodity.pattern-two.notPlastic", Produced.with(stringSerde, orderPatternSerde));
+        rewardStream.to("t.commodity.reward-two", Produced.with(stringSerde, orderRewardSerde));
+        storageStream.to("t.commodity.storage-two", Produced.with(stringSerde, orderSerde));
+
+        patternStream[plasticIndex].print(Printed.<String, OrderPatternMessage>toSysOut().withLabel("OrderPatterMessage send plastic"));
+        patternStream[noPlasticIndex].print(Printed.<String, OrderPatternMessage>toSysOut().withLabel("OrderPatterMessage send not plastic"));
+        rewardStream.print(Printed.<String, OrderRewardMessage>toSysOut().withLabel("OrderRewardMessage send"));
+        storageStream.print(Printed.<String, OrderMessage>toSysOut().withLabel("OrderMessage storage send"));
+        log.info("Send messages two");
         return maskedOrderStream;
     }
 }
