@@ -32,14 +32,14 @@ public class CommodityOneStream {
 
         KStream<String, OrderPatternMessage> patternStream = maskedOrderStream
                 .mapValues(CommodityStreamUtil::mapToOrderPattern);
-        patternStream.to("t.commodity.pattern-one", Produced.with(stringSerde, orderPatternSerde));
 
         KStream<String, OrderRewardMessage> rewardStream = maskedOrderStream.filter(isLargeQuantity())
                 .mapValues(CommodityStreamUtil::mapToOrderReward);
 
+        patternStream.to("t.commodity.pattern-one", Produced.with(stringSerde, orderPatternSerde));
         rewardStream.to("t.commodity.reward-one", Produced.with(stringSerde, orderRewardSerde));
-
         maskedOrderStream.to("t.commodity.storage-one", Produced.with(stringSerde, orderSerde));
+
         maskedOrderStream.print(Printed.<String, OrderMessage>toSysOut().withLabel("Masked Order Stream"));
         return maskedOrderStream;
     }
