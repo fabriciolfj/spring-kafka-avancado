@@ -23,10 +23,10 @@ import static com.github.fabriciolfj.util.CommodityStreamUtil.isLargeQuantity;
 import static com.github.fabriciolfj.util.CommodityStreamUtil.isPlastic;
 
 @Slf4j
-//@Configuration
-public class CommodityFiveStream {
+@Configuration
+public class CommoditySixStream {
 
-    //@Bean
+    @Bean
     public KStream<String, OrderMessage> kStreamCommodityTrading(StreamsBuilder builder) {
         var stringSerde = Serdes.String();
         var orderSerde = new JsonSerde<>(OrderMessage.class);
@@ -46,17 +46,29 @@ public class CommodityFiveStream {
 
         final var branchProducer = Produced.with(stringSerde, orderPatternSerde);
         new KafkaStreamBrancher<String, OrderPatternMessage>()
-                .branch(isPlastic(), kstream -> kstream.to("t.commodity.pattern-six.plastic", branchProducer))
-                .defaultBranch(kstream -> kstream.to("t.commodity.pattern-six.notplastic", branchProducer))
+                .branch(isPlastic(), kstream -> kstream.to("t.commodity.pattern-five.plastic", branchProducer))
+                .defaultBranch(kstream -> kstream.to("t.commodity.pattern-five.notplastic", branchProducer))
                 .onTopOf(maskedOrderStream.mapValues(CommodityStreamUtil::mapToOrderPattern));
+
+        KStream<String, OrderMessage> fraudStream = maskedOrderStream
+                .filter((k, v) -> v.getLocation().toUpperCase().startsWith("C"))
+                .peek((k,v) -> this.reportFraud(v));
+        fraudStream
+                .map((k,v) -> KeyValue.pair(v.getLocation().toUpperCase().charAt(0) + "===",
+                        v.getPrice().multiply(BigDecimal.valueOf(v.getQuantity())).intValue()))
+                .to("t.commodity.fraud-six", Produced.with(stringSerde, Serdes.Integer()));
+
 
         rewardStream.to("t.commodity.reward-six", Produced.with(stringSerde, orderRewardSerde));
         storageStream.to("t.commodity.storage-six", Produced.with(stringSerde, orderSerde));
-
 
         rewardStream.print(Printed.<String, OrderRewardMessage>toSysOut().withLabel("OrderRewardMessage send six"));
         storageStream.print(Printed.<String, OrderMessage>toSysOut().withLabel("OrderMessage storage send six"));
         log.info("Send messages five");
         return maskedOrderStream;
+    }
+
+    private void reportFraud(OrderMessage v) {
+        log.info("Reporting fraud: {}", v);
     }
 }
