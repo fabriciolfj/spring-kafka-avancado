@@ -23,10 +23,10 @@ import static com.github.fabriciolfj.util.CommodityStreamUtil.isLargeQuantity;
 import static com.github.fabriciolfj.util.CommodityStreamUtil.isPlastic;
 
 @Slf4j
-@Configuration
+//@Configuration
 public class CommoditySixStream {
 
-    @Bean
+    //@Bean
     public KStream<String, OrderMessage> kStreamCommodityTrading(StreamsBuilder builder) {
         var stringSerde = Serdes.String();
         var orderSerde = new JsonSerde<>(OrderMessage.class);
