@@ -61,6 +61,6 @@ public class FeedbackFiveStream {
     private KeyValueMapper<String, FeedbackMessage, Iterable<KeyValue<String, String>>> splitWords() {
         return (key, value) -> Arrays
                 .asList(value.getDescription().replaceAll("[^a-zA-Z ]", "").toLowerCase().split("\\s+")).stream()
-                .distinct().map(word -> KeyValue.pair(value.getLocation(), word)).collect(Collectors.toList());
+                .distinct().map(word -> KeyValue.pair(value.getLocation(), "type")).collect(Collectors.toList());
     }
 }
