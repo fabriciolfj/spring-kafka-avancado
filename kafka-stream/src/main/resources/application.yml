@@ -1,7 +1,7 @@
 
 
 server:
-  port: 9002
+  port: 9005
 
 logging:
   pattern:

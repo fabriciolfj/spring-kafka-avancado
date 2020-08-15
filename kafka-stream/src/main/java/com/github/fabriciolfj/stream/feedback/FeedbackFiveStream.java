@@ -18,13 +18,13 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@Configuration
+//@Configuration
 public class FeedbackFiveStream {
 
     private static final Set<String> BAD_WORDS = Set.of("angry", "sad", "bad");
     private static final Set<String> GOOD_WORDS = Set.of("happy", "good", "helpful");
 
-    @Bean
+    //@Bean
     public KStream<String, FeedbackMessage> kstreamFeedBack(StreamsBuilder builder) {
         var stringSerde = Serdes.String();
         var feedbackSerde = new JsonSerde<>(FeedbackMessage.class);

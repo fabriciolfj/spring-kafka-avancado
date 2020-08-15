@@ -20,7 +20,7 @@ public class PromotionUppercaseStream {
 
     public ObjectMapper objectMapper = new ObjectMapper();
 
-    @Bean
+    //@Bean
     public KStream<String, String> kStreamPromotionUppercase(StreamsBuilder builder) {
         var stringSerde = Serdes.String();
 

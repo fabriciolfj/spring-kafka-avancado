@@ -14,7 +14,7 @@ import org.springframework.kafka.support.serializer.JsonSerde;
 //@Configuration
 public class PromotionUppercaseCustomJsonStream {
 
-    @Bean
+    //@Bean
     public KStream<String, PromotionMessage> kstreamPromotionUppercase(StreamsBuilder builder) {
         var stringSerde = Serdes.String();
         var jsonSerde = new PromotionSerde();

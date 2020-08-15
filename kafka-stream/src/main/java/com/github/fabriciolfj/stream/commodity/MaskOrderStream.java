@@ -16,7 +16,7 @@ import org.springframework.kafka.support.serializer.JsonSerde;
 //@Configuration
 public class MaskOrderStream {
 
-    @Bean
+    //@Bean
     public KStream<String, OrderMessage> kstreamCommodityTrading(StreamsBuilder builder) {
         var stringSerde = Serdes.String();
         var orderSerde = new JsonSerde<>(OrderMessage.class);
