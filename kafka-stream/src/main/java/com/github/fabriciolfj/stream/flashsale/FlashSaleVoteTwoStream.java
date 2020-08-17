@@ -15,10 +15,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-@Configuration
+//@Configuration
 public class FlashSaleVoteTwoStream {
 
-    @Bean
+   // @Bean
     public KStream<String, String> kstreamFlashSaleVote(final StreamsBuilder builder) {
         var stringSerde = Serdes.String();
         var flashSaleVoteSerde = new JsonSerde<>(FlashSaleVoteMessage.class);

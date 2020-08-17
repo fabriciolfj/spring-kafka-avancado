@@ -32,8 +32,9 @@ public class FeedbackOneStream {
     }
 
     private ValueMapper<FeedbackMessage, Iterable<String>> mapperGoodWords() {
-        return feedbackMessage -> Arrays.asList(feedbackMessage.getDescription().replaceAll("[^a-zA-Z]", "")
+        return null;
+        /*return feedbackMessage -> Arrays.asList(feedbackMessage.getDescription().replaceAll("[^a-zA-Z]", "")
             .toLowerCase().split("\\s+")).stream()
-            .filter(word -> GOOD_WORDS.contains(word)).distinct().collect(Collectors.toList());
+            .filter(word -> GOOD_WORDS.contains(word)).distinct().collect(Collectors.toList());*/
     }
 }

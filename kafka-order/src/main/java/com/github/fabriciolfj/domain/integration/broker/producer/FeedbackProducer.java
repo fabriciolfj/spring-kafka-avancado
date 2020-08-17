@@ -15,6 +15,6 @@ public class FeedbackProducer {
 
     public void publish(final FeedbackMessage feedbackMessage) {
         log.info("Publish message: " + feedbackMessage);
-        kafkaTemplate.send("t.commodity.feedback", feedbackMessage);
+        kafkaTemplate.send("t.commodity.feedback2", feedbackMessage);
     }
 }

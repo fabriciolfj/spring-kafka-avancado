@@ -48,8 +48,9 @@ public class FeedbackFourStream {
     }
 
     private KeyValueMapper<String, FeedbackMessage, Iterable<KeyValue<String, String>>> splitWords() {
-        return (key, value) -> Arrays
+        return null;
+        /*return (key, value) -> Arrays
                 .asList(value.getDescription().replaceAll("[^a-zA-Z ]", "").toLowerCase().split("\\s+")).stream()
-                .distinct().map(word -> KeyValue.pair(value.getDescription(), word)).collect(Collectors.toList());
+                .distinct().map(word -> KeyValue.pair(value.getDescription(), word)).collect(Collectors.toList());*/
     }
 }
