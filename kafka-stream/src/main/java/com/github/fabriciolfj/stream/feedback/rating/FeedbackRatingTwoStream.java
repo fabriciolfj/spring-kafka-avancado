@@ -2,7 +2,6 @@ package com.github.fabriciolfj.stream.feedback.rating;
 
 import com.github.fabriciolfj.domain.integration.broker.model.FeedbackMessage;
 import com.github.fabriciolfj.domain.integration.broker.model.FeedbackRatingOneMessage;
-import org.apache.catalina.Store;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.kstream.Consumed;
@@ -14,25 +13,25 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.support.serializer.JsonSerde;
 
 //@Configuration
-public class FeedbackRatingOneStream {
+public class FeedbackRatingTwoStream {
 
     //@Bean
     public KStream<String, FeedbackMessage> kStreamFeedbackRating(StreamsBuilder builder) {
         var stringSerde = Serdes.String();
         var feedbackSerde = new JsonSerde<>(FeedbackMessage.class);
-        var feedbackRatingOneSerde = new JsonSerde<>(FeedbackRatingOneMessage.class);
-        var feedbackRatingOneStoreValueSerde = new JsonSerde<>(FeedbackRatingOneStoreValue.class);
+        var feedbackRatingTwoSerde = new JsonSerde<>(FeedbackRatingTwoMessage.class);
+        var feedbackRatingTwoStoreValueSerde = new JsonSerde<>(FeedbackRatingTwoStoreValue.class);
 
         var feedbackStream = builder.stream("t.commodity.feedback2", Consumed.with(stringSerde, feedbackSerde));
 
-        var feedbackRatingStateStoreName = "feedbackRatingOneStateStore";
+        var feedbackRatingStateStoreName = "feedbackRatingTwoStateStore";
         var storeSupplier = Stores.inMemoryKeyValueStore(feedbackRatingStateStoreName);
-        var storeBuilder = Stores.keyValueStoreBuilder(storeSupplier, stringSerde, feedbackRatingOneStoreValueSerde);
+        var storeBuilder = Stores.keyValueStoreBuilder(storeSupplier, stringSerde, feedbackRatingTwoStoreValueSerde);
 
         builder.addStateStore(storeBuilder);
 
-        feedbackStream.transformValues(() -> new FeedbackRatingOneTransformer(feedbackRatingStateStoreName), feedbackRatingStateStoreName)
-                .to("t.commodity.feedback.rating-one", Produced.with(stringSerde, feedbackRatingOneSerde));
+        feedbackStream.transformValues(() -> new FeedbackRatingTwoTransformer(feedbackRatingStateStoreName), feedbackRatingStateStoreName)
+                .to("t.commodity.feedback.rating-two", Produced.with(stringSerde, feedbackRatingTwoSerde));
 
         return feedbackStream;
     }
