@@ -11,10 +11,10 @@ import org.springframework.kafka.support.serializer.JsonSerde;
 
 import java.time.Duration;
 
-@Configuration
+//@Configuration
 public class InventoryFiveStream {
 
-    @Bean
+    //@Bean
     public KStream<String, InventoryMessage> kstreamInventory(StreamsBuilder builder) {
         var stringSerde = Serdes.String();
         var inventorySerde = new JsonSerde<>(InventoryMessage.class);
